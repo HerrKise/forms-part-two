@@ -35,7 +35,7 @@ const SelectField = ({
                 value={value}
                 onChange={handleChange}
             >
-                <option selected={value === ""} disabled value="">
+                <option disabled value="">
                     {defaultOption}
                 </option>
                 {optionsArray &&
