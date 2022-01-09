@@ -15,7 +15,6 @@ const EditForm = () => {
         sex: "male",
         qualities: []
     });
-    // const [updatedData, setUpdatedData] = useState(data);
     const [isLoading, setIsLoading] = useState(true);
     const params = useParams();
     const history = useHistory();
@@ -51,8 +50,15 @@ const EditForm = () => {
     }, [data.profession]);
 
     useEffect(() => {
-        console.log(data);
-    }, [data.profession]);
+        if (data.qualities.some((qualitie) => qualitie.value)) {
+            setData((prevState) => ({
+                ...prevState,
+                qualities: Object.values(qualities).filter((i) =>
+                    data.qualities.some((quality) => i._id === quality.value)
+                )
+            }));
+        }
+    }, [data.qualities]);
 
     const handleChange = (target) => {
         setData((prevState) => ({
@@ -103,11 +109,19 @@ const EditForm = () => {
         api.users
             .update(userId, data)
             .then(() => history.push(`/users/${userId}`));
-        // history.push(`/users/${userId}`);
-        console.log(data);
+    };
+    const handleReturn = () => {
+        history.push(`/users/${userId}`);
     };
     return (
         <div className="container mt-5">
+            <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleReturn}
+            >
+                <i className="bi bi-caret-left"></i>Назад
+            </button>
             <div className="row">
                 <div className="col-md-6 offset-md-3 shadow p-4">
                     {!isLoading ? (
@@ -133,7 +147,7 @@ const EditForm = () => {
                                     options={professions}
                                     onChange={handleChange}
                                     defaultOption="Choose..."
-                                    value={data.profession.name}
+                                    value={data.profession._id}
                                 />
                             )}
                             <RadioField
